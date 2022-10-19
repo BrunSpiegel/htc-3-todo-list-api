@@ -1,9 +1,9 @@
 import { Request, Response } from "express"
-import { prisma } from "../database/prisma"
-import { AppError } from "../Errors/AppError"
 import { CreateNoteService } from "../Services/CreateNoteService"
+import { DeleteNoteService } from "../Services/DeleteNoteService"
 import { ListNotesService } from "../Services/ListNotesService"
 import { ShowNoteService } from "../Services/ShowNoteService"
+import { UpdateNoteService } from "../Services/UpdateNoteService"
 
 export class NotesController {
   async index(request: Request, response: Response): Promise<Response> {
@@ -39,12 +39,23 @@ export class NotesController {
   }
 
   async update(request: Request, response: Response): Promise<Response> { 
-    // TODO PUT
-    return response.json({})
+    const { id } = request.params
+		const { title, text } = request.body
+
+		const updateNote = new UpdateNoteService()
+
+		const note = await updateNote.execute({ id, title, text })
+
+		return response.json(note)
   }
 
   async delete(request: Request, response: Response): Promise<Response> { 
-    // TODO Delete
-    return response.json({})
+    const { id } = request.params
+
+		const deleteNote = new DeleteNoteService()
+
+		await deleteNote.execute({ id })
+
+		return response.send()
   }
 }
