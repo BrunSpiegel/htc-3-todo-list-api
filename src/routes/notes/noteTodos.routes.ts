@@ -1,28 +1,15 @@
-import { response, Router } from 'express'
-import { prisma } from '../../database/prisma'
+import { Router } from "express";
+import { NoteTodosController } from "../../controllers/NoteTodosController";
+import * as Yup from "yup";
+import { validateSchema } from "../../middlewares/validateSchema";
+import { createNoteTodoSchema } from "../../dtos/createNoteTodo.schema";
 
-type PostRequestParams = {
-  noteId: string
-}
+export const noteTodosRouter = Router({ mergeParams: true });
 
-export const noteTodosRouter = Router({ mergeParams: true })
+const noteTodosController = new NoteTodosController();
 
-noteTodosRouter.post('/', async (request, response) => {
-  const { noteId } = request.params as PostRequestParams
-
-  const { text, checked } = request.body
-
-  if (!text) {
-    return response.status(400).json({error: true, message: "Missing text" })
-  }
-
-  const todo = await prisma.todo.create({
-    data: {
-      checked: !!checked,
-      text,
-      noteId
-    }
-  })
-
-  return response.status(201).json(todo)
-})
+noteTodosRouter.post(
+  "/",
+  validateSchema(createNoteTodoSchema),
+  noteTodosController.create
+);
