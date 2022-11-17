@@ -1,7 +1,9 @@
 node_modules
 
 dev.db
+dev.db-journal
 tmp/*
 uploads/*
+access.log
 
 !.gitkeep

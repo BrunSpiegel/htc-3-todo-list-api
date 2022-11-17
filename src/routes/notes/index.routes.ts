@@ -1,6 +1,8 @@
 import { Router } from 'express'
 import { NotesController } from '../../controllers/NotesController'
-import { prisma } from '../../database/prisma'
+import { createNoteSchema } from '../../dtos/createNoteSchema'
+import { updateNoteSchema } from '../../dtos/updateNoteSchema'
+import { validateSchema } from '../../middlewares/validateSchema'
 import { noteTodosRouter } from './noteTodos.routes'
 
 export const notesRouter = Router()
@@ -11,9 +13,9 @@ notesRouter.get('/', notesController.index)
 
 notesRouter.get('/:id', notesController.show)
 
-notesRouter.post('/', notesController.create)
+notesRouter.post('/', validateSchema(createNoteSchema), notesController.create)
 
-notesRouter.put('/:id', notesController.update)
+notesRouter.put('/:id', validateSchema(updateNoteSchema), notesController.update)
 
 notesRouter.delete('/:id', notesController.delete)
 
