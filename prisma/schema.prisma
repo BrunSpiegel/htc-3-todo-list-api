@@ -10,14 +10,28 @@ datasource db {
   url      = "file:./dev.db"
 }
 
+model User {
+  id       String @id @default(uuid())
+  name     String
+  email    String
+  password String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Note      Note[]
+  Image     Image[]
+}
+
 model Note {
   id    String  @id @default(uuid())
   title String
   text  String?
   todos Todo[]
+  user  User    @relation(fields: [userId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  userId    String
 }
 
 model Todo {
@@ -34,7 +48,9 @@ model Todo {
 model Image {
   id       String @id @default(uuid())
   filename String
+  user     User   @relation(fields: [userId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  userId    String
 }

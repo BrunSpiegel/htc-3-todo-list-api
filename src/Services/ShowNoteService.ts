@@ -3,10 +3,11 @@ import { AppError } from "../Errors/AppError"
 
 type ShowNoteServiceParams = {
   id: string
+  userId: string
 }
 
 export class ShowNoteService {
-  async execute({ id }: ShowNoteServiceParams) {
+  async execute({ id, userId }: ShowNoteServiceParams) {
     const note = await prisma.note.findFirst({
       where: {
         id
@@ -18,6 +19,10 @@ export class ShowNoteService {
 
     if(!note) {
       throw new AppError('Note not found!', 404)
+    }
+
+    if(note.userId !== userId) {
+      throw new AppError("You can't see notes from another user. ", 403)
     }
 
     return note

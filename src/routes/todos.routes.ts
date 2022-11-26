@@ -1,7 +1,10 @@
 import { Router } from 'express'
 import { prisma } from '../database/prisma'
+import { ensureAuthenticated } from '../middlewares/ensureAuthenticated'
 
 export const todosRouter = Router()
+
+todosRouter.use(ensureAuthenticated)
 
 todosRouter.get('/:id', async (request, response) => {
   const { id } = request.params
